@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import SearchHeaderBar from "@/components/main/SearchHeaderBar";
 import { CATEGORIES, CategoryType } from "@/constants/category";
 import SearchhTab from "@/components/search/SearchhTab";
 import SearchResultsSection from "@/components/search/SearchResultsSection";
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
   const categoryQuery = searchParams.get("category");
@@ -18,6 +18,7 @@ export default function SearchPage() {
       ? (categoryQuery as CategoryType)
       : "전체",
   );
+
   return (
     <div className="bg-slate-50 min-h-full">
       <SearchHeaderBar
@@ -29,5 +30,19 @@ export default function SearchPage() {
       <SearchhTab />
       <SearchResultsSection />
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      }
+    >
+      <SearchContent />
+    </Suspense>
   );
 }
